@@ -1,0 +1,6 @@
+@UserSystemTask_HostAddress = http://localhost:5267
+
+GET {{UserSystemTask_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
