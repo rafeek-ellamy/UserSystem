@@ -13,11 +13,14 @@ Technologies Used:
 Backend: .NET 8, Entity Framework Core (with Repository Pattern), JWT Authentication (Authorization via user claims)
 
 ----------------------
+
+Link = https://github.com/rafeek-ellamy/UserSystem-UI
+
 Frontend:
-Angular 18
-PrimeNG
-PrimeFlex
-User Roles and Authorization
+Angular 18,
+PrimeNG,
+PrimeFlex,
+User Roles and Authorization,
 The system supports three primary user roles:
 
 ----------------------
