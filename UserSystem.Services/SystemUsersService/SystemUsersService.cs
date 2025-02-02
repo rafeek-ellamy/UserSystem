@@ -64,7 +64,6 @@ namespace UserSystem.Services.SystemUsersService
             var filterData = (from user in usersQuery
                               join userRole in _userRolesRepo.GetAll() on user.Id equals userRole.UserId
                               join role in _rolesRepo.GetAll() on userRole.RoleId equals role.Id
-                              where string.IsNullOrEmpty(input.RoleId) || role.Id == input.RoleId
                               group role by user into userGroup
                               select new
                               {
