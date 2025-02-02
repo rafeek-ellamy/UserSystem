@@ -29,17 +29,10 @@ namespace UserSystem.Repositories.UserRepository
             return entity;
         }
 
-        public async Task<bool> RemoveAsync(string id)
+        public void Remove(UserProfile entity)
         {
-            var q = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
-            if (q != null)
-            {
-                //q.IsDeleted = true;
-                await context.SaveChangesAsync();
-                return true;
-            }
-
-            return false;
+            context.Users.Remove(entity);
+            context.SaveChanges();
         }
     }
 }

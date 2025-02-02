@@ -1,13 +1,14 @@
-using Microsoft.AspNetCore.Authorization;
+using Configurations.GenericApiResponse;
 using Microsoft.AspNetCore.Mvc;
 using UserSystem.Services.AuthService;
 using UserSystem.Services.Models.Input;
+using UserSystem.Services.Models.Output;
 using UserSystem.Services.SystemUsersService;
 
 namespace UserSystem.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/auth-user")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authAdminService;
@@ -19,7 +20,8 @@ namespace UserSystem.Api.Controllers
             _systemUsersService = systemUsersService;
         }
 
-        [HttpPost("users/register")]
+        [HttpPost("register")]
+        [ProducesResponseType(typeof(ApiResponse<UserLoginOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> RegisterSystemUser([FromBody] RegisterSystemUserInputDto input)
         {
             var response = await _authAdminService.RegisterSystemUser(input);
@@ -30,22 +32,11 @@ namespace UserSystem.Api.Controllers
             return BadRequest(response);
         }
 
-        [HttpPost("users/login")]
+        [HttpPost("login")]
+        [ProducesResponseType(typeof(ApiResponse<UserLoginOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Login([FromBody] LoginInputDto input)
         {
             var response = await _authAdminService.Login(input);
-
-            if (response.Success)
-                return Ok(response);
-
-            return BadRequest(response);
-        }
-
-        [HttpGet("users")]
-        [Authorize]
-        public async Task<IActionResult> RegisterSystemUser([FromQuery] SystemUserFilterInputDto input)
-        {
-            var response = await _systemUsersService.GetSystemUsers(input);
 
             if (response.Success)
                 return Ok(response);

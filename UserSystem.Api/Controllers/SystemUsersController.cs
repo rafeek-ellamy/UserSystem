@@ -1,15 +1,16 @@
-﻿using Configurations.Policies;
+﻿using Configurations.GenericApiResponse;
+using Configurations.Policies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
+using System.ComponentModel.DataAnnotations;
 using UserSystem.Services.Models.Input;
+using UserSystem.Services.Models.Output;
 using UserSystem.Services.SystemUsersService;
 
 namespace UserSystem.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/system-user")]
     [ApiController]
-    [Authorize(AuthorizationPolicies.SuperAdmin)]
     public class SystemUsersController : ControllerBase
     {
         #region Ctor
@@ -18,44 +19,70 @@ namespace UserSystem.Api.Controllers
         {
             _systemUsersService = systemUsersService;
         }
+        #endregion
 
-        [HttpGet("users")]
-        public async Task<IActionResult> RegisterSystemUser([FromQuery] SystemUserFilterInputDto input)
+        #region Endpoints
+        [HttpGet("get-all")]
+        [Authorize(Roles = AuthorizationPolicies.SuperAdmin + "," + AuthorizationPolicies.Admin)]
+        [ProducesResponseType(typeof(PagedApiResponse<List<SystemUsersOutputDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetSystemUsers([FromQuery] SystemUserFilterInputDto input)
         {
             var response = await _systemUsersService.GetSystemUsers(input);
 
-            if (response.Success)
-                return Ok(response);
+            if (response.Success) return Ok(response);
 
             return BadRequest(response);
         }
 
-        [AllowAnonymous]
-        [HttpGet("debug-token")]
-        public IActionResult DebugToken()
+        [HttpGet("get-by-id")]
+        [Authorize(Roles = AuthorizationPolicies.SuperAdmin + "," + AuthorizationPolicies.Admin)]
+        [ProducesResponseType(typeof(ApiResponse<SystemUsersOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetSystemUserById([FromQuery][Required] string userId)
         {
-            // Get token from header
+            var response = await _systemUsersService.GetSystemUserById(userId);
 
-            string token = Request.Headers["Authorization"];
+            if (response.Success) return Ok(response);
 
-            if (token.StartsWith("Bearer"))
-            {
-                token = token.Substring("Bearer ".Length).Trim();
-            }
-            var handler = new JwtSecurityTokenHandler();
+            return BadRequest(response);
+        }
 
-            // Returns all claims present in the token
+        [HttpPost("create")]
+        [Authorize(Roles = AuthorizationPolicies.SuperAdmin)]
+        [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> CreateSystemUsers([FromBody] CreateSystemUserInputDto input)
+        {
+            input.CurrentUserId = User.FindFirst("UserId")?.Value;
+            var response = await _systemUsersService.CreateSystemUsers(input);
 
-            JwtSecurityToken jwt = handler.ReadJwtToken(token);
+            if (response.Success) return Ok(response);
 
-            var claims = "List of Claims: \n\n";
+            return BadRequest(response);
+        }
 
-            foreach (var claim in jwt.Claims)
-            {
-                claims += $"{claim.Type}: {claim.Value}\n";
-            }
+        [HttpPut("update")]
+        [Authorize(Roles = AuthorizationPolicies.SuperAdmin)]
+        [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateSystemUsers([FromBody] UpdateSystemUserInputDto input)
+        {
+            input.CurrentUserId = User.FindFirst("UserId")?.Value;
+            var response = await _systemUsersService.UpdateSystemUsers(input);
 
-            return Ok(claims);
+            if (response.Success) return Ok(response);
+
+            return BadRequest(response);
+        }
+
+        [HttpDelete("delete")]
+        [Authorize(Roles = AuthorizationPolicies.SuperAdmin)]
+        [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteSystemUsers([FromQuery][Required] string userId)
+        {
+            var currentUserId = User.FindFirst("UserId")?.Value;
+            var response = await _systemUsersService.DeleteSystemUsers(userId, currentUserId);
+
+            if (response.Success) return Ok(response);
+
+            return BadRequest(response);
         }
         #endregion
     }

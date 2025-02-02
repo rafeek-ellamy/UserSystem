@@ -123,5 +123,8 @@
   <data name="EmailAlreadyExist" xml:space="preserve">
       <value>عنوان البريد الإلكتروني مسجل بالفعل</value>
   </data>
+  <data name="UserNotExist" xml:space="preserve">
+    <value>المستخدم غير موجود</value>
+  </data>
 
 </root>

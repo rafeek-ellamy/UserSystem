@@ -1,9 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Swashbuckle.AspNetCore.Annotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace UserSystem.Services.Models.Input
 {
-    public class RegisterSystemUserInputDto
+    public class UpdateSystemUserInputDto
     {
+        [Required]
+        public string UserId { get; set; }
+
         [Required, StringLength(20)]
         public string FirstName { get; set; }
 
@@ -16,9 +20,17 @@ namespace UserSystem.Services.Models.Input
         [Required, EmailAddress]
         public string Email { get; set; }
 
-        [Required, StringLength(50)]
+        [StringLength(50)]
         [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[a-zA-Z\\d@$!%*?&]{8,16}$",
             ErrorMessage = "add at least one lowercase letter, one uppercase letter, one digit, and one special character.")]
-        public string Password { get; set; }
+        public string? Password { get; set; }
+
+        [Required]
+        public List<string> Roles { get; set; }
+
+
+        //action by
+        [SwaggerIgnore]
+        public string? CurrentUserId { get; set; }
     }
 }

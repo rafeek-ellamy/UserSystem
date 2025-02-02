@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.Globalization;
 using System.Text;
 
@@ -49,13 +51,13 @@ namespace Configurations
             #endregion
 
             #region Add Logger
-            //var logger = new LoggerConfiguration().ReadFrom.Configuration(configuration).CreateLogger();
+            var logger = new LoggerConfiguration().ReadFrom.Configuration(configuration).CreateLogger();
 
-            //services.AddLogging(loggingBuilder =>
-            //{
-            //    loggingBuilder.ClearProviders();
-            //    loggingBuilder.AddSerilog(logger);
-            //});
+            services.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.ClearProviders();
+                loggingBuilder.AddSerilog(logger);
+            });
             #endregion
 
             #region Add Localization

@@ -9,6 +9,6 @@ namespace UserSystem.Repositories.UserRepository
         Task<UserProfile?> GetByIdAsync(string id);
         Task InsertAsync(UserProfile user);
         Task<UserProfile> UpdateAsync(UserProfile user);
-        Task<bool> RemoveAsync(string id);
+        void Remove(UserProfile entity);
     }
 }

@@ -7,6 +7,17 @@ using UserSystem.Data.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost4200", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200") // your Angular app URL
+            .AllowAnyHeader() // allow all headers
+            .AllowAnyMethod() // allow all HTTP methods
+            .AllowCredentials(); // allows cookies or credentials
+    });
+});
+
 // Add services
 builder.Services.AddControllers();
 
@@ -43,6 +54,7 @@ using (var scope = app.Services.CreateScope())
     await dataContext.SeedAsync(dataContext);
 }
 
+app.UseCors("AllowLocalhost4200");
 app.UseHttpsRedirection();
 app.UseExceptionHandler();
 app.UseBuildExtensions();

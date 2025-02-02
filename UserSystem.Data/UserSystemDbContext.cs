@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using UserSystem.Data.Entities;
-using UserSystem.Data.Enums;
 
 namespace UserSystem.Data
 {
@@ -16,6 +15,7 @@ namespace UserSystem.Data
         }
 
         public DbSet<UserProfile> UserProfiles { get; set; }
+        public DbSet<AuditLog> AuditLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -30,14 +30,13 @@ namespace UserSystem.Data
                 FirstName = "System",
                 LastName = "SuperAdmin",
                 Email = "admin@admin.com",
-                UserTypeId = EUserType.Admin,
                 UserName = "SuperAdmin",
                 NormalizedUserName = "SUPERADMIN",
                 EmailConfirmed = true,
-                PasswordHash = new PasswordHasher<string>().HashPassword(null, "P@ssw0rd")
+                PasswordHash = new PasswordHasher<string>().HashPassword(null, "P@ssw0rd"),
+                CreatedAt = DateTime.UtcNow
             };
         }
-
         public async Task SeedAsync(UserSystemDbContext context)
         {
             if (!context.Users.Any(o => o.Id == _adminId))

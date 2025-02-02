@@ -55,6 +55,7 @@ namespace UserSystem.Services.AuthService
                 LastName = input.LastName,
                 Email = input.Email,
                 UserName = input.UserName,
+                CreatedAt = DateTime.UtcNow
             };
 
             var addRes = await _userManager.CreateAsync(user, input.Password);
